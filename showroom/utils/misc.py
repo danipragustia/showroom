@@ -32,7 +32,7 @@ def format_name(root_dir, time_str, room, ext):
     rootdir = root_dir
     dir_format = '{root}/{date}/{group}'
     tempdir = '{root}/active'.format(root=rootdir)
-    name_format = '{date} Showroom - {handle} {time}{count}.{ext}'
+    name_format = 'Showroom {name} {group} {date} ({time} JST).{ext}'
 
     # count = 0
     # count_str = '_{:02d}'
@@ -42,10 +42,11 @@ def format_name(root_dir, time_str, room, ext):
     os.makedirs('{}/logs'.format(destdir), exist_ok=True)
 
     _date, _time = time_str.split(' ')
-    short_date = _date[2:].replace('-', '')
+    hours, minutes, secs = map(int, _time.split(':'))
+    short_date = _date
 
-    outfile = name_format.format(date=short_date, handle=room.handle,
-                                 time=_time.replace(':', ''), count='', ext=ext)
+    outfile = name_format.format(date=short_date, time='{h}:{m}'.format(h=hours, m=minutes),
+                                 count='', ext=ext, group=room.group, name=room.name)
 
     return tempdir, destdir, outfile
 
