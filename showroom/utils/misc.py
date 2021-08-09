@@ -45,7 +45,7 @@ def format_name(root_dir, time_str, room, ext):
     hours, minutes, secs = map(int, _time.split(':'))
     short_date = _date
 
-    outfile = name_format.format(date=short_date, time='{h}:{m}'.format(h=hours, m=minutes),
+    outfile = name_format.format(date=short_date, time='{h}-{m}'.format(h=hours, m=minutes),
                                  count='', ext=ext, group=room.group, name=room.name)
 
     return tempdir, destdir, outfile
