@@ -7,7 +7,7 @@ import logging
 import datetime
 import time
 import re
-from .constants import TOKYO_TZ
+from .constants import JKT_TZ
 
 __all__ = ['ShowroomIndex']
 
@@ -462,10 +462,10 @@ class ShowroomIndex(object):
         self._quitting = True
 
     def run(self):
-        last_update = datetime.datetime.now(tz=TOKYO_TZ)
+        last_update = datetime.datetime.now(tz=JKT_TZ)
         update_interval = 120.0
         while not self._quitting:
-            curr_time = datetime.datetime.now(tz=TOKYO_TZ)
+            curr_time = datetime.datetime.now(tz=JKT_TZ)
             if (curr_time - last_update).total_seconds() > update_interval:
                 self.update()
             time.sleep(0.9)

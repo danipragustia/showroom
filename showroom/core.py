@@ -123,7 +123,7 @@ from showroom.downloader import Downloader
 # from .message import ShowroomMessage
 # from .exceptions import ShowroomDownloadError
 from .comments import CommentLogger
-from .constants import TOKYO_TZ, HHMM_FMT, FULL_DATE_FMT, MODE_TO_STATUS
+from .constants import JKT_TZ, HHMM_FMT, FULL_DATE_FMT, MODE_TO_STATUS
 from .index import ShowroomIndex, Room
 from .settings import ShowroomSettings
 from .utils import strftime
@@ -215,7 +215,7 @@ class Watcher(object):
         if start_time:
             self.__start_time = start_time
         else:
-            self.__start_time = datetime.datetime.now(tz=TOKYO_TZ)
+            self.__start_time = datetime.datetime.now(tz=JKT_TZ)
 
         self._end_time = None
 
@@ -224,7 +224,7 @@ class Watcher(object):
         self.set_watch_time(self.__start_time, self.watch_duration)
 
         self._live = False
-        self.__live_time = datetime.datetime.fromtimestamp(0.0, tz=TOKYO_TZ)
+        self.__live_time = datetime.datetime.fromtimestamp(0.0, tz=JKT_TZ)
 
         self.__mode = "schedule"
 
@@ -353,7 +353,7 @@ class Watcher(object):
     def _watch_ready(self):
         # start watch_seconds before start_time
         # finish watch_seconds * 2 after start_time
-        curr_time = datetime.datetime.now(tz=TOKYO_TZ)
+        curr_time = datetime.datetime.now(tz=JKT_TZ)
 
         # TODO: is this noticeably slower than the old (int > (curr - start).totalseconds() > int)
         if (self._watch_start_time
@@ -364,7 +364,7 @@ class Watcher(object):
             return False
 
     def _live_ready(self):
-        curr_time = datetime.datetime.now(tz=TOKYO_TZ)
+        curr_time = datetime.datetime.now(tz=JKT_TZ)
         if (curr_time - self.__live_time).total_seconds() > self.__live_rate:
             self.__live_time = curr_time
             return True
@@ -433,7 +433,7 @@ class Watcher(object):
         while self._mode == "watch":
             if self._watch_ready():
                 if self.check_live_status():
-                    self._start_time = datetime.datetime.now(tz=TOKYO_TZ)
+                    self._start_time = datetime.datetime.now(tz=JKT_TZ)
                     core_logger.info('{} is now live'.format(self.name))
                     if self.room.is_wanted():
                         self._mode = "download"
@@ -465,7 +465,7 @@ class Watcher(object):
                         if self.room.is_wanted():
                             self._mode = "download"
                     else:
-                        self._end_time = datetime.datetime.now(tz=TOKYO_TZ)
+                        self._end_time = datetime.datetime.now(tz=JKT_TZ)
                         self._mode = "completed"
                 time.sleep(1.0)
 
@@ -480,7 +480,7 @@ class Watcher(object):
                     else:
                         self._mode = "live"
                 else:
-                    self._end_time = datetime.datetime.now(tz=TOKYO_TZ)
+                    self._end_time = datetime.datetime.now(tz=JKT_TZ)
                     self._mode = 'completed'
 
                 # self.download.wait(timeout=self.__download_timeout)
@@ -753,7 +753,7 @@ class WatchManager(object):
 
         self._completed_lock = threading.RLock()
 
-        self.__schedule_time = datetime.datetime.fromtimestamp(0.0, tz=TOKYO_TZ)
+        self.__schedule_time = datetime.datetime.fromtimestamp(0.0, tz=JKT_TZ)
         self.__lives_time = self.__schedule_time
 
         self.update_flag = threading.Event()
@@ -839,20 +839,20 @@ class WatchManager(object):
             if livelist['genre_id'] in GENRE_IDS:
                 for item in [e for e in livelist['lives'] if 'room_id' in e and str(e['room_id']) in self.index]:
                     room_id = str(item['room_id'])
-                    start_time = datetime.datetime.fromtimestamp(float(item['started_at']), tz=TOKYO_TZ)
+                    start_time = datetime.datetime.fromtimestamp(float(item['started_at']), tz=JKT_TZ)
 
                     # core_logger.debug('Checking live room id {}'.format(room_id))
                     if room_id in self.watchers:
                         if self.watchers[room_id].mode == "schedule":
                             self.watchers[room_id].reschedule(start_time)
-                            self.watchers[room_id].set_watch_time(datetime.datetime.now(tz=TOKYO_TZ))
+                            self.watchers[room_id].set_watch_time(datetime.datetime.now(tz=JKT_TZ))
                             core_logger.debug('Early live for {} at {}'.format(self.watchers[room_id].name,
                                                                                self.watchers[
                                                                                    room_id].formatted_start_time))
                     else:
                         new = Watcher(self.index[room_id], self.client, self.settings,
                                       update_flag=self.update_flag, start_time=start_time)
-                        new.set_watch_time(datetime.datetime.now(tz=TOKYO_TZ))
+                        new.set_watch_time(datetime.datetime.now(tz=JKT_TZ))
                         info = new.get_info()
                         core_logger.debug(
                             'Unscheduled live for {} starting at {}'.format(info['name'], info['start_time']))
@@ -891,7 +891,7 @@ class WatchManager(object):
 
         for item in [e for e in upcoming if str(e['room_id']) in self.index]:
             start_time = datetime.datetime.fromtimestamp(float(item['next_live_start_at']), 
-                                                         tz=TOKYO_TZ)
+                                                         tz=JKT_TZ)
             room_id = str(item['room_id'])
 
             if room_id in self.watchers:
@@ -1003,7 +1003,7 @@ class WatchManager(object):
             maint_time = self._next_maintenance + datetime.timedelta(minutes=minutes)
 
         if not minutes or maint_time.hour > 5:
-            maint_time = (datetime.datetime.now(tz=TOKYO_TZ) + datetime.timedelta(days=1)).replace(hour=0, minute=5, second=0, microsecond=0)
+            maint_time = (datetime.datetime.now(tz=JKT_TZ) + datetime.timedelta(days=1)).replace(hour=0, minute=5, second=0, microsecond=0)
 
         self._next_maintenance = maint_time
 
@@ -1028,7 +1028,7 @@ class WatchManager(object):
         return self.settings.throttle.rate.onlives
 
     def _schedule_ready(self):
-        curr_time = datetime.datetime.now(tz=TOKYO_TZ)
+        curr_time = datetime.datetime.now(tz=JKT_TZ)
         time_diff = (curr_time - self.__schedule_time).total_seconds()
         if time_diff > self.__schedule_rate:
             # core_logger.debug('Time difference of {} is greater than schedule rate of {}, '
@@ -1040,7 +1040,7 @@ class WatchManager(object):
             return False
 
     def _lives_ready(self):
-        curr_time = datetime.datetime.now(tz=TOKYO_TZ)
+        curr_time = datetime.datetime.now(tz=JKT_TZ)
         time_diff = (curr_time - self.__lives_time).total_seconds()
         if time_diff > self.__lives_rate:
             # core_logger.debug('Time difference of {} is greater than live rate of {}, '
@@ -1052,7 +1052,7 @@ class WatchManager(object):
             return False
 
     def _maintenance_ready(self):
-        curr_time = datetime.datetime.now(tz=TOKYO_TZ)
+        curr_time = datetime.datetime.now(tz=JKT_TZ)
         if self._next_maintenance < curr_time:
             if len(list(self.watchers.get_by_mode("live"))) < 1:
                 return True

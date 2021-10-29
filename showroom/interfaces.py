@@ -9,7 +9,7 @@ from io import UnsupportedOperation
 from queue import Queue, Empty as QueueEmpty
 
 # This seems like a waste of an import
-from .constants import TOKYO_TZ, HHMM_FMT
+from .constants import JKT_TZ, HHMM_FMT
 from .control import ShowroomLiveControllerThread as ShowroomController
 from .exceptions import ShowroomStopRequest
 from .index import ShowroomIndex
@@ -182,7 +182,7 @@ class BasicCLI(object):
             self.control_thread.index.filter_add(args.names)
             self.control_thread.index.filter_add(self.settings.filter.wanted)
 
-        self._time = datetime.datetime.fromtimestamp(0.0, tz=TOKYO_TZ)
+        self._time = datetime.datetime.fromtimestamp(0.0, tz=JKT_TZ)
 
         # TODO: This needs to be revised
         self.query_dict = {"index_filter_list": self._parse_index_filter_list,
@@ -207,7 +207,7 @@ class BasicCLI(object):
                 return
 
             # Automatic hourly schedule updates
-            # curr_time = datetime.datetime.now(tz=TOKYO_TZ)
+            # curr_time = datetime.datetime.now(tz=JKT_TZ)
             # if (curr_time - self._time).total_seconds() > 3600.0:
             #     self._time = curr_time
             #     print(curr_time.strftime("\n\n%H:%M"))

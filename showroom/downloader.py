@@ -7,7 +7,7 @@ import time
 import os
 import shutil
 
-from .constants import TOKYO_TZ, FULL_DATE_FMT
+from .constants import JKT_TZ, FULL_DATE_FMT
 from .utils import format_name, strftime
 
 download_logger = logging.getLogger('showroom.downloader')
@@ -403,7 +403,7 @@ class Downloader(object):
         Returns:
             datetime object representing the time the download started
         """
-        tokyo_time = datetime.datetime.now(tz=TOKYO_TZ)
+        tokyo_time = datetime.datetime.now(tz=JKT_TZ)
 
         # TODO: Does this work on Windows now?
         env = os.environ.copy()

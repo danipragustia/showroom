@@ -4,7 +4,7 @@ import logging
 # TODO: set log rotation time in config
 from datetime import time as dt_time, datetime
 from logging.handlers import TimedRotatingFileHandler
-from showroom.constants import TOKYO_TZ, HHMM_FMT
+from showroom.constants import JKT_TZ, HHMM_FMT
 import os
 
 
@@ -18,16 +18,16 @@ def main():
 
 def tokyotime(obj, seconds=None):
     if seconds is None:
-        return datetime.now(tz=TOKYO_TZ).timetuple()
+        return datetime.now(tz=JKT_TZ).timetuple()
     else:
         # Does this do what I want it to?
-        return datetime.fromtimestamp(seconds, tz=TOKYO_TZ).timetuple()
+        return datetime.fromtimestamp(seconds, tz=JKT_TZ).timetuple()
 
 
 def setup_logging(log_file):
     # TODO: more advanced filters, logging info like when rooms go live to console
     # https://docs.python.org/3/library/logging.config.html#logging-config-dictschema
-    log_backup_time = dt_time(tzinfo=TOKYO_TZ)
+    log_backup_time = dt_time(tzinfo=JKT_TZ)
     log_filter = logging.Filter(name="showroom")
 
     file_log_handler = TimedRotatingFileHandler(log_file, encoding='utf8',

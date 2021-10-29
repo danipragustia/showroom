@@ -13,7 +13,7 @@ from json import JSONDecodeError
 from websocket import ABNF
 from websocket import WebSocketConnectionClosedException
 
-from showroom.constants import TOKYO_TZ, FULL_DATE_FMT
+from showroom.constants import JKT_TZ, FULL_DATE_FMT
 from showroom.utils import format_name
 from requests.exceptions import HTTPError
 
@@ -206,7 +206,7 @@ class CommentLogger(object):
         self.settings = settings
         self.watcher = watcher
 
-        self.last_update = datetime.datetime.fromtimestamp(10000, tz=TOKYO_TZ)
+        self.last_update = datetime.datetime.fromtimestamp(10000, tz=JKT_TZ)
         self.update_interval = self.settings.comments.default_update_interval
 
         self.comment_log = []
@@ -519,7 +519,7 @@ class CommentLogger(object):
         #            elif highest_count > 20 and self.update_interval > min_interval:
         #                self.update_interval -= 1.0
         #
-        #            current_time = datetime.datetime.now(tz=TOKYO_TZ)
+        #            current_time = datetime.datetime.now(tz=JKT_TZ)
         #            timediff = (current_time - self.last_update).total_seconds()
         #            self.last_update = current_time
         #
@@ -578,7 +578,7 @@ class RoomScraper:
         self.settings = settings
         self.watcher = watcher
 
-        self.last_update = datetime.datetime.fromtimestamp(10000, tz=TOKYO_TZ)
+        self.last_update = datetime.datetime.fromtimestamp(10000, tz=JKT_TZ)
         self.update_interval = self.settings.comments.default_update_interval
 
         self.comment_log = []
@@ -689,7 +689,7 @@ class RoomScraper:
             elif highest_count > 20 and self.update_interval > min_interval:
                 self.update_interval -= 1.0
 
-            current_time = datetime.datetime.now(tz=TOKYO_TZ)
+            current_time = datetime.datetime.now(tz=JKT_TZ)
             timediff = (current_time - self.last_update).total_seconds()
             self.last_update = current_time
 
