@@ -30,7 +30,7 @@ def format_name(root_dir, time_str, room, ext):
         Is there ever a situation where outfile could already exist?
     """
     rootdir = root_dir
-    dir_format = '{root}/{date}/{group}'
+    dir_format = '{root}/{date}'
     tempdir = '{root}/active'.format(root=rootdir)
     name_format = 'Showroom {name} {group} {date} ({time} WIB).{ext}'
 
