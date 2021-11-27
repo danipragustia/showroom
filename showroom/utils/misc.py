@@ -30,9 +30,9 @@ def format_name(root_dir, time_str, room, ext):
         Is there ever a situation where outfile could already exist?
     """
     rootdir = root_dir
-    dir_format = '{root}/{date}'
+    dir_format = '{root}/{group}'
     tempdir = '{root}/active'.format(root=rootdir)
-    name_format = 'Showroom {name} {group} {date} ({time} WIB).{ext}'
+    name_format = 'Showroom {name} {group} {date} Jam {time} WIB.{ext}'
 
     # count = 0
     # count_str = '_{:02d}'
@@ -42,11 +42,18 @@ def format_name(root_dir, time_str, room, ext):
     os.makedirs('{}/logs'.format(destdir), exist_ok=True)
 
     _date, _time = time_str.split(' ')
-    hours, minutes, secs = map(int, _time.split(':'))
-    short_date = _date
+    hours, minutes, secs = map(str, _time.split(':'))
+    if len(hours) == 1:
+        hours = '0' + hours
+    if len(minutes) == 1:
+        hours = '0' + hours        
+        
+    short_date = bulan_def_indo(_date)
 
-    outfile = name_format.format(date=short_date, time='{h}-{m}'.format(h=hours, m=minutes),
+    outfile = name_format.format(date=short_date, time='{h} {m}'.format(h=hours, m=minutes),
                                  count='', ext=ext, group=room.group, name=room.name)
+
+    print(outfile)
 
     return tempdir, destdir, outfile
 
@@ -55,6 +62,40 @@ def iso_date_to_six_char(date):
     y, m, d = date.split('-')
     return '{:02d}{}{}'.format(int(y)-CENTURY_OFFSET, m, d)
 
+
+def bulan_def_indo(date):
+    y, m, d = date.split('-')
+    m = int(m)
+    if m == 1:
+        m = "Januari"
+    elif m == 2:
+        m = "Februari"
+    elif m == 3:
+        m = "Maret"
+    elif m == 4:
+        m = "April"
+    elif m == 5:
+        m = "Mei"
+    elif m == 6:
+        m = "Juni"
+    elif m == 7:
+        m = "Juli"
+    elif m == 8:
+        m = "Agustus"
+    elif m == 9:
+        m = "September"
+    elif m == 10:
+        m = "Oktober"
+    elif m == 11:
+        m = "November"
+    elif m == 12:
+        m = "Desember"
+    else:
+        m = m
+
+    return '{} {} {}'.format(d, m, y)
+            
+                
 
 def strftime(dt: datetime.datetime, format_str: str):
     """
